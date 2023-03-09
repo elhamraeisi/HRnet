@@ -1,0 +1,40 @@
+body {
+  background-color: var(--surface-ground);
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-form {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin: 70px;
+  width: 30%;
+}
+
+.logo{
+  text-align: center;
+  margin: auto;
+  display: flex;
+  width: 60%;
+}
+
+
+.employee-button {
+  text-decoration: none; 
+}
+ 
+.gap-2{
+  color: rgb(115, 115, 115);
+}
+
+.modal-text{
+  color: #696cff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 3.5rem;
+}
