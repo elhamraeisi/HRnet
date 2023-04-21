@@ -214,7 +214,7 @@ function Form() {
             <div className="gap-2">
               <label htmlFor="calender-input" id='calender-label'>Start Date</label>
               <br /><br />
-              <Calendar name='calender' id="calender-input" data-testid="calender-input" value={formData.startdate} onChange={handleChange} className={formData.startdateError ? "p-invalid block" : "block"} dateFormat="yy-mm-dd" showIcon={true}
+              <Calendar name='startdate' id="calender-input" data-testid="calender-input" value={formData.startdate} onChange={handleChange} className={formData.startdateError ? "p-invalid block" : "block"} dateFormat="yy-mm-dd" showIcon={true}
                 aria-labelledby="calender-label" aria-describedby="calender-error" />
               {formData.startdateError && <small id='calender-error' className="p-error block">{formData.startdateError}</small>}
             </div>
