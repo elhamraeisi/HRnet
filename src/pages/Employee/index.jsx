@@ -5,10 +5,11 @@ import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
-
+import { useSelector } from "react-redux";
 
 function Table() {
-  const json = JSON.parse(localStorage.getItem('employees'));
+  const employees = useSelector((state) => state.employees.employees);
+
 
   const [globalFilter, setGlobalFilter] = useState(null);
 
@@ -21,7 +22,7 @@ function Table() {
     return (
       <div className="p-input-icon-left">
         <i className="pi pi-search"></i>
-        <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" size="50" />
+        <InputText id='globalSearch' data-testid='globalSearch' type="search" onInput={(e) => setGlobalFilter(e.target.value ? e.target.value : "")} placeholder="Global Search" size="50" />
       </div>
     );
   };
@@ -43,7 +44,7 @@ function Table() {
           <Button icon="pi pi-arrow-left" />
         </Link>
         <h2>Current Employees</h2>
-        <DataTable value={json} removableSort paginator paginatorTemplate={template1} rowsPerPageOptions={[5, 10, 15, 20]} className="p-datatable-customers text-right" showGridlines rows={5} responsiveLayout="scroll" globalFilter={globalFilter} header={header}>
+        <DataTable value={employees} removableSort paginator paginatorTemplate={template1} rowsPerPageOptions={[5, 10, 15, 20]} className="p-datatable-customers text-right" showGridlines rows={5} responsiveLayout="scroll" globalFilter={globalFilter} header={header}>
           <Column field="name" header="Name" sortable />
           <Column field="lastname" header="Last Name" sortable />
           <Column field="birthday" header="Birthday" body={birthDayTemplate} sortable />

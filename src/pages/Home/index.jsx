@@ -5,9 +5,10 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import logo from "../../assets/images/logo.jpeg";
 import "./Home.css";
-import Modal from '../../components/Modal';
 import { Link } from 'react-router-dom'
-
+import { useDispatch } from "react-redux";
+import { addEmployee } from '../../store/reducers/employeesReducer';
+import { Modal } from 'super-modal-react'
 
 const states = [
   { label: 'Alabama', value: 'AL' },
@@ -58,7 +59,7 @@ const departments = [
 ]
 
 function Form() {
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: '',
     lastname: '',
@@ -73,15 +74,13 @@ function Form() {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  let minBirthday = new Date()
-    ;
+  let minBirthday = new Date();
 
   minBirthday.setFullYear(1900)
   minBirthday.setMonth(0)
   minBirthday.setDate(1)
 
   let maxBirthday = new Date()
-
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -164,7 +163,6 @@ function Form() {
       'stateError': !fieldValide.state ? "State must be filled out !" : "",
       'zipcodeError': !fieldValide.zipcode ? "Zipcode must be filled out !" : "",
       'departmentError': !fieldValide.department ? "Department must be filled out !" : ""
-
     });
 
     return isFormValid
@@ -172,90 +170,94 @@ function Form() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log(formData);
     if (validateForm()) {
-      let employees = JSON.parse(localStorage.getItem("employees")) || [];
 
-      employees.push(formData);
-
-      localStorage.setItem("employees", JSON.stringify(employees));
+      dispatch(addEmployee(formData))
       setIsOpenModal(true)
     }
-
   };
+
 
   return (
     <div className='container'>
       <div className="card-form">
         <div className="p-fluid grid">
-          <img src={logo} alt="logo" className="logo" />
+          <img src={logo} alt="logo" className="logo" width={'60%'} height={'auto'} />
           <br />
           <h3>Create Employee</h3>
           <br />
           <form onSubmit={handleSubmit}>
             <div className='gap-2'>
-              <label htmlFor="inputtext">First Name</label>
+              <label htmlFor="firstName-input" id='firstName-label'>First Name</label>
               <br /><br />
-              <InputText name='name' type='text' id="inputtext" className={formData.nameError?.length > 0 ? "p-invalid block" : "block"} value={formData.name} onChange={handleChange} />
-              {formData.nameError && <small className="p-error block">{formData.nameError}</small>}
+              <InputText name='name' type='text' id="firstName-input" data-testid="firstName-input" className={formData.nameError?.length > 0 ? "p-invalid block" : "block"} value={formData.name} onChange={handleChange}
+                aria-labelledby="firstName-label" aria-describedby="firstName-error" />
+              {formData.nameError && <small id="firstName-error" className="p-error block">{formData.nameError}</small>}
               <br /><br />
             </div>
             <div className="gap-2">
-              <label htmlFor="inputtext">Last Name</label>
+              <label htmlFor="lastName-input" id='lastName-label'>Last Name</label>
               <br /><br />
-              <InputText name='lastname' type='text' id="inputtext" className={formData.lastnameError ? "p-invalid block" : "block"} value={formData.lastname} onChange={handleChange} />
-              {formData.lastnameError && <small className="p-error block">{formData.lastnameError}</small>}
-            </div>
-            <br />
-            <div className="gap-2">
-              <label htmlFor="calenderselect">Date of Birth</label>
-              <br /><br />
-              <Calendar minDate={minBirthday} maxDate={maxBirthday} name='birthday' inputId="calenderselect" className={formData.birthdayError ? "p-invalid block" : "block"} value={formData.birthday} onChange={handleChange} dateFormat="yy-mm-dd" showIcon={true} />
-              {formData.birthdayError && <small className="p-error block">{formData.birthdayError}</small>}
+              <InputText name='lastname' type='text' id="lastName-input" data-testid="lastName-input" className={formData.lastnameError ? "p-invalid block" : "block"} value={formData.lastname} onChange={handleChange}
+                aria-labelledby="lastName-label" aria-describedby="lastName-error" />
+              {formData.lastnameError && <small id="lasttName-error" className="p-error block">{formData.lastnameError}</small>}
             </div>
             <br />
             <div className="gap-2">
-              <label htmlFor="calenderselect">Start Date</label>
+              <label htmlFor="birthday-input" id='birthday-label'>Date of Birth</label>
               <br /><br />
-              <Calendar name='startdate' inputId="calenderselect" value={formData.startdate} onChange={handleChange} className={formData.startdateError ? "p-invalid block" : "block"} dateFormat="yy-mm-dd" showIcon={true} />
-              {formData.startdateError && <small className="p-error block">{formData.startdateError}</small>}
+              <Calendar name='birthday' id='birthday-input' data-testid="birthday-input" minDate={minBirthday} maxDate={maxBirthday} inputId="calenderselect" className={formData.birthdayError ? "p-invalid block" : "block"} value={formData.birthday} onChange={handleChange} dateFormat="yy-mm-dd" showIcon={true}
+                aria-labelledby="birthday-label" aria-describedby="birthday-error" />
+              {formData.birthdayError && <small id='birthday-error' className="p-error block">{formData.birthdayError}</small>}
+            </div>
+            <br />
+            <div className="gap-2">
+              <label htmlFor="calender-input" id='calender-label'>Start Date</label>
+              <br /><br />
+              <Calendar name='calender' id="calender-input" data-testid="calender-input" value={formData.startdate} onChange={handleChange} className={formData.startdateError ? "p-invalid block" : "block"} dateFormat="yy-mm-dd" showIcon={true}
+                aria-labelledby="calender-label" aria-describedby="calender-error" />
+              {formData.startdateError && <small id='calender-error' className="p-error block">{formData.startdateError}</small>}
             </div>
             <br />
             <h3>Address</h3>
             <br />
             <div className="gap-2">
-              <label htmlFor="inputtext">Street</label>
+              <label htmlFor="street-input" id='street-label'>Street</label>
               <br /><br />
-              <InputText name='street' type='text' id="inputtext" value={formData.street} className={formData.streetError ? "p-invalid block" : "block"} onChange={handleChange} />
-              {formData.streetError && <small className="p-error block">{formData.streetError}</small>}
+              <InputText name='street' type='text' id="street-input" data-testid="street-input" value={formData.street} className={formData.streetError ? "p-invalid block" : "block"} onChange={handleChange}
+                aria-labelledby="street-label" aria-describedby="street-error" />
+              {formData.streetError && <small id='street-error' className="p-error block">{formData.streetError}</small>}
             </div>
             <br />
             <div className="gap-2">
-              <label htmlFor="dropdown">State</label>
+              <label htmlFor="state-input" id='state-label'>State</label>
               <br /><br />
-              <Dropdown inputId="dropdown" name="state" options={states} value={formData.state} onChange={handleChange} className={formData.stateError?.length > 0 ? "p-invalid block" : "block"} />
-              {formData.stateError && <small className="p-error block">{formData.stateError}</small>}
+              <Dropdown id="state-input" data-testid="state-input" name="state" options={states} value={formData.state} onChange={handleChange} className={formData.stateError?.length > 0 ? "p-invalid block" : "block"}
+                aria-labelledby="state-label" aria-describedby="state-error" />
+              {formData.stateError && <small id='state-error' className="p-error block">{formData.stateError}</small>}
             </div>
             <br />
             <div className="gap-2">
-              <label htmlFor="inputtext">Zip Code</label>
+              <label htmlFor="zipcode-input" id='zipcode-label'>Zip Code</label>
               <br /><br />
-              <InputText name='zipcode' type='number' id="inputtext" value={formData.zipcode} onChange={handleChange} className={formData.zipcodeError?.length > 0 ? "p-invalid block" : "block"} />
-              {formData.zipcodeError && <small className="p-error block">{formData.zipcodeError}</small>}
+              <InputText name='zipcode' type='number' id="zipcode-input" data-testid="zipcode-input" value={formData.zipcode} onChange={handleChange} className={formData.zipcodeError?.length > 0 ? "p-invalid block" : "block"}
+                aria-labelledby="zipcode-label" aria-describedby="zipcode-error" />
+              {formData.zipcodeError && <small id='zipcode-error' className="p-error block">{formData.zipcodeError}</small>}
             </div>
             <br />
             <div className="gap-2">
-              <label htmlFor="dropdown">Department</label>
+              <label htmlFor="department-input" id='department-label'>Department</label>
               <br /><br />
-              <Dropdown inputId="dropdown" name="department" options={departments} value={formData.department} onChange={handleChange} className={formData.departmentError?.length > 0 ? "p-invalid block" : "block"} />
-              {formData.departmentError && <small className="p-error block">{formData.departmentError}</small>}
+              <Dropdown id="department-input" data-testid="department-input" name="department" options={departments} value={formData.department} onChange={handleChange} className={formData.departmentError?.length > 0 ? "p-invalid block" : "block"}
+                aria-labelledby="department-label" aria-describedby="department-error" />
+              {formData.departmentError && <small id='department-error' className="p-error block">{formData.departmentError}</small>}
             </div>
             <br /><br />
-            <Button label="Submit" type="submit" className="p-button-success" />
+            <Button type="submit" name='submitForm' className="p-button-success" aria-label="Submit Form" label='Submit' />
             <br /><br />
           </form>
-          <Link to="/employee" className="employee-button">
-            <Button icon="pi pi-eye" className="p-button-info mr-2 p-button-outlined" label='View All Employee' />
+          <Link to="/employee" className="employee-button" aria-label='View All Employee'>
+            <Button icon="pi pi-eye" name='viewAllEmployee' className="p-button-info mr-2 p-button-outlined" label='View All Employee' />
           </Link>
 
           <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal} title={'Submission Received'} content={() => <p className="modal-text" >Thank you, we have received your submission.</p>
